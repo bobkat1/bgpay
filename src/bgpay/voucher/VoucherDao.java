@@ -161,6 +161,49 @@ public class VoucherDao extends Dao {
 		}
 		return list;
 	}
+	
+	/**
+	 * Creates a voucher object from a database row and returns an ArrayList of the objects
+	 * @return
+	 */
+	public List<Voucher> getAllVouchers() {
+		
+		List<Voucher> list = new ArrayList<Voucher>();
+		
+		String selectString = "SELECT * FROM " + TABLE_NAME;
+		
+		Statement statement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			Connection connection = Database.getConnection();
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery(selectString);
+			
+			while (resultSet.next()) {
+				Date stDateSql = resultSet.getDate(VoucherFields.START_DATE.getFieldTitle());
+				Date eDateSql = resultSet.getDate(VoucherFields.END_DATE.getFieldTitle());
+				Time startTimeSql = resultSet.getTime(VoucherFields.START_TIME.getFieldTitle());
+				Time endTimeSql = resultSet.getTime(VoucherFields.END_TIME.getFieldTitle());
+				
+				LocalDate startDate = stDateSql.toLocalDate();
+				LocalDate endDate = eDateSql.toLocalDate();
+				LocalTime startTime = startTimeSql.toLocalTime();
+				LocalTime endTime = endTimeSql.toLocalTime();
+				
+				
+				list.add(new Voucher(resultSet.getString(VoucherFields.PRODUCTION_NAME.getFieldTitle()), resultSet.getString(VoucherFields.PRODUCTION_COMPANY.getFieldTitle()),
+						resultSet.getDouble(VoucherFields.RATE.getFieldTitle()), startDate, endDate, startTime, endTime, resultSet.getBoolean(VoucherFields.PAID.getFieldTitle())));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			close(statement);
+		}
+		return list;
+		
+	}
 
 	@Override
 	public void create() throws SQLException {

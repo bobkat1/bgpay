@@ -186,8 +186,7 @@ public class Voucher implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "Voucher [productionName=" + productionName + ", productionCompany=" + productionCompany + ", rate=" + rate + ", startDate="
-				+ startDate + ", endDate=" + endDate + ", startTime=" + startTime + ", endTime=" + endTime + ", isPaid=" + isPaid + "]";
+		return startDate + " " + productionName + " " + isPaid;
 	}
 	
 

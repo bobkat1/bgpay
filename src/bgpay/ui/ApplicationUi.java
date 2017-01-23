@@ -8,18 +8,20 @@ import javax.swing.JMenuItem;
 
 import bgpay.database.Database;
 import bgpay.voucher.Voucher;
-import bgpay.voucher.VoucherDao;
 import bgpay.voucher.VoucherModel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+
 import java.awt.BorderLayout;
 import javax.swing.JList;
 
 public class ApplicationUi {
 
 	public JFrame frame;
+	private JList<Voucher> theList;
 
 	/**
 	 * Create the application.
@@ -57,8 +59,10 @@ public class ApplicationUi {
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
 		VoucherModel voucherModel = new VoucherModel(database);
-		JList<Voucher> list = new JList<Voucher>(voucherModel);
-		scrollPane.setViewportView(list);
+		theList = new JList<Voucher>(voucherModel.getListModel());
+		ListSelectionModel lsm = theList.getSelectionModel();
+		lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane.setViewportView(theList);
 	}
 
 }

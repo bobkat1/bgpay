@@ -4,8 +4,6 @@
  */
 package bgpay.voucher;
 
-import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
@@ -17,16 +15,16 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 
 	private static final long serialVersionUID = -2518266574306794765L;
 
-	final DefaultListModel<LocalDate> listModel;
+	final DefaultListModel<Voucher> listModel;
 	private VoucherDao voucherDao;
 
 	/**
 	 * 
 	 */
 	public VoucherModel(Database database) {
-		listModel = new DefaultListModel<LocalDate>();
+		listModel = new DefaultListModel<Voucher>();
 		voucherDao = new VoucherDao(database);
-		listDates();
+		listVouchers();
 
 	}
 
@@ -42,22 +40,22 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 		return null;
 	}
 
-	public boolean listDates() {
+	public boolean listVouchers() {
 		boolean completed = false;
-		try {
-			List<LocalDate> tempList = voucherDao.getDates();
-			if (tempList.isEmpty())
-				completed = false;
-			else {
-				for (LocalDate dates : tempList) {
-					listModel.addElement(dates);
-					completed = true;
-				}
+		List<Voucher> tempList = voucherDao.getAllVouchers();
+		if (tempList.isEmpty())
+			completed = false;
+		else {
+			for (Voucher vouchers : tempList) {
+				listModel.addElement(vouchers);
+				completed = true;
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		return completed;
+	}
+	
+	public DefaultListModel<Voucher> getListModel() {
+		return listModel;
 	}
 
 }
