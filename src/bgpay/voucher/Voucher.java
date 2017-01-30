@@ -1,19 +1,19 @@
 package bgpay.voucher;
+
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import bgpay.ui.PayRates;
 
 /**
  * @author Robert Miki A00990619
  * @version
  */
 
-public class Voucher implements Serializable {
+public class Voucher implements Serializable, Comparable<Voucher> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 9214918170106433931L;
 	public static final double DEFAULT_UNION_RATE = 23.75;
 	public static final double SAE_RATE = 31.45;
@@ -22,14 +22,15 @@ public class Voucher implements Serializable {
 	private String productionName;
 	private String productionCompany;
 	private double rate;
+	private PayRates rateEnum;
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private LocalTime startTime;
 	private LocalTime endTime;
 	private boolean isPaid;
-	
+
 	public Voucher() {
-		
+
 	}
 
 	/**
@@ -41,8 +42,8 @@ public class Voucher implements Serializable {
 	 * @param endTime
 	 * @param isPaid
 	 */
-	public Voucher(String productionName, String productionCompany, double rate, 
-			LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, boolean isPaid) {
+	public Voucher(String productionName, String productionCompany, double rate, LocalDate startDate, LocalDate endDate, LocalTime startTime,
+			LocalTime endTime, boolean isPaid) {
 		setProductionName(productionName);
 		setProductionCompany(productionCompany);
 		setRate(rate);
@@ -74,6 +75,13 @@ public class Voucher implements Serializable {
 	public double getRate() {
 		return rate;
 	}
+	
+	/**
+	 * @return rateEnum
+	 */
+	public PayRates getPayRateEnum() {
+		return rateEnum;
+	}
 
 	/**
 	 * @return the startDate
@@ -81,7 +89,7 @@ public class Voucher implements Serializable {
 	public LocalDate getStartDate() {
 		return startDate;
 	}
-	
+
 	public Date convertSDate() {
 		return Date.valueOf(startDate);
 	}
@@ -92,7 +100,7 @@ public class Voucher implements Serializable {
 	public LocalDate getEndDate() {
 		return endDate;
 	}
-	
+
 	public Date convertEDate() {
 		return Date.valueOf(endDate);
 	}
@@ -110,10 +118,9 @@ public class Voucher implements Serializable {
 	public LocalTime getEndTime() {
 		return endTime;
 	}
-	
+
 	/**
-	 * 
-	 * @return
+	 * @return isPaid
 	 */
 	public boolean getIsPaid() {
 		return isPaid;
@@ -146,16 +153,31 @@ public class Voucher implements Serializable {
 		if (rate > 0)
 			this.rate = rate;
 	}
+	
+	/**
+	 * Sets the class payRate field corresponding to the rate
+	 * @param rate
+	 */
+	public void setRateEnum(double rate) {
+		PayRates[] payRates = PayRates.values();
+		for (PayRates payRate : payRates) {
+			if (rate == payRate.getRate()) {
+				rateEnum = payRate;
+			}
+		}
+	}
 
 	/**
-	 * @param startDate the startDate to set
+	 * @param startDate
+	 *            the startDate to set
 	 */
 	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
 	/**
-	 * @param endDate the endDate to set
+	 * @param endDate
+	 *            the endDate to set
 	 */
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
@@ -176,18 +198,26 @@ public class Voucher implements Serializable {
 	public void setEndTime(LocalTime endTime) {
 		this.endTime = endTime;
 	}
-	
+
 	public void setIsPaid(boolean isPaid) {
 		this.isPaid = isPaid;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return startDate + " " + productionName + " " + isPaid;
+		if (isPaid == true)
+			return startDate + " " + productionName + " " + productionCompany + " Yes";
+		else
+			return startDate + " " + productionName + " " + productionCompany + " No";
 	}
-	
+
+	@Override
+	public int compareTo(Voucher o) {
+		return this.startDate.compareTo(o.getStartDate());
+	}
 
 }

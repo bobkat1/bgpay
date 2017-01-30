@@ -1,5 +1,6 @@
 package bgpay.ui;
 
+
 import javax.swing.JFrame;
 
 import javax.swing.JMenuBar;
@@ -22,6 +23,7 @@ public class ApplicationUi {
 
 	public JFrame frame;
 	private JList<Voucher> theList;
+	private VoucherModel listModel;
 
 	/**
 	 * Create the application.
@@ -47,7 +49,8 @@ public class ApplicationUi {
 		JMenuItem mntmNewVoucher = new JMenuItem("New Voucher");
 		mntmNewVoucher.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new VoucherEntry(database);
+				VoucherEntry vE = new VoucherEntry(database);
+				listModel.addElement(vE.getVoucher());
 			}
 		});
 		mnFile.add(mntmNewVoucher);
@@ -58,8 +61,9 @@ public class ApplicationUi {
 		JScrollPane scrollPane = new JScrollPane();
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
-		VoucherModel voucherModel = new VoucherModel(database);
-		theList = new JList<Voucher>(voucherModel.getListModel());
+		listModel = new VoucherModel(database);
+		theList = new JList<Voucher> (listModel);
+
 		ListSelectionModel lsm = theList.getSelectionModel();
 		lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(theList);

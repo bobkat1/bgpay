@@ -10,14 +10,14 @@ public enum PayRates {
 	
 	UNION(Voucher.DEFAULT_UNION_RATE), NONUNION(Voucher.NON_UNION_RATE), SAE(Voucher.SAE_RATE);
 	
-	private double wage;
+	private double rate;
 	
-	private PayRates(double wage) {
-		this.wage = wage;
+	private PayRates(double rate) {
+		this.rate = rate;
 	}
 	
-	public double getWage() {
-		return wage;
+	public double getRate() {
+		return rate;
 	}
 
 }

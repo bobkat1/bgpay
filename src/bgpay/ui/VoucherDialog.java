@@ -31,7 +31,7 @@ import bgpay.database.Database;
 import bgpay.voucher.Voucher;
 import bgpay.voucher.VoucherDao;
 
-public class VoucherEntry extends JDialog {
+public class VoucherDialog extends JDialog {
 
 	private static final long serialVersionUID = -1093318977235491292L;
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
@@ -58,9 +58,10 @@ public class VoucherEntry extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public VoucherEntry(Database database) {
+	public VoucherDialog(Database database, Voucher voucher) {
 		
 		VoucherDao voucherDao = new VoucherDao(database);
+		this.voucher = voucher;
 
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -76,6 +77,7 @@ public class VoucherEntry extends JDialog {
 		}
 		{
 			JTextField prodNameTxtBox = new JTextField();
+			prodNameTxtBox.setText(voucher.getProductionName());
 			prodNameTxtBox.addFocusListener(new FocusAdapter() {
 				@Override
 				public void focusLost(FocusEvent e) {
@@ -91,6 +93,7 @@ public class VoucherEntry extends JDialog {
 		}
 		{
 			JTextField prodComTxtBox = new JTextField();
+			prodComTxtBox.setText(voucher.getProductionCompany());
 			prodComTxtBox.addFocusListener(new FocusAdapter() {
 				@Override
 				public void focusLost(FocusEvent e) {
@@ -128,17 +131,18 @@ public class VoucherEntry extends JDialog {
 		{
 			rateComboBox = new JComboBox<PayRates>();
 			rateComboBox.setModel(new DefaultComboBoxModel<PayRates>(PayRates.values()));
+			rateComboBox.setSelectedItem(voucher.getPayRateEnum());
 			contentPanel.add(rateComboBox, "cell 0 4");
 		}
 		{
 			stTxtField = new JTextField();
-			stTxtField.setText("1200");
+			stTxtField.setText(voucher.getStartTime().toString());
 			contentPanel.add(stTxtField, "cell 0 3");
 			stTxtField.setColumns(10);
 		}
 		{
 			etTxtField = new JTextField();
-			etTxtField.setText("1200");
+			etTxtField.setText(voucher.getEndTime().toString());
 			contentPanel.add(etTxtField, "cell 1 3");
 			etTxtField.setColumns(10);
 			{
@@ -165,15 +169,29 @@ public class VoucherEntry extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						
 						startDate = convertDate(stDatePicker.getDate());
 						endDate = convertDate(edDatePicker.getDate());
 						startTime = LocalTime.parse(stTxtField.getText(), formatter);
 						endTime = LocalTime.parse(etTxtField.getText(), formatter);
+						
+						voucher.setProductionName(prodName);
+						voucher.setProductionCompany(prodCom);
+						voucher.setRate(((PayRates) rateComboBox.getSelectedItem()).getRate());
+						voucher.setStartDate(startDate);
+						voucher.setEndDate(endDate);
+						voucher.setStartTime(startTime);
+						voucher.setEndTime(endTime);
+						voucher.setIsPaid(((Paid) paidComboBox.getSelectedItem()).getIsPaid());
+						
+						/*startDate = convertDate(stDatePicker.getDate());
+						endDate = convertDate(edDatePicker.getDate());
+						startTime = LocalTime.parse(stTxtField.getText(), formatter);
+						endTime = LocalTime.parse(etTxtField.getText(), formatter);
 						Voucher tempVoucher = new Voucher(prodName, prodCom, ((PayRates) rateComboBox.getSelectedItem()).getRate(), startDate, endDate,
-								startTime, endTime, ((Paid) paidComboBox.getSelectedItem()).getIsPaid());
+								startTime, endTime, ((Paid) paidComboBox.getSelectedItem()).isPaid);*/
 						try {
-						voucherDao.add(tempVoucher);
-						voucher = tempVoucher;
+						voucherDao.update(voucher);
 						} catch (SQLException ex) {
 							ex.printStackTrace();
 						}
