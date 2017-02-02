@@ -204,6 +204,103 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 		this.isPaid = isPaid;
 	}
 
+	@Override
+	public int compareTo(Voucher o) {
+		if (this.equals(null) || o.equals(null))
+			return 0;
+		return this.startDate.compareTo(o.getStartDate());
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
+		result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
+		result = prime * result + (isPaid ? 1231 : 1237);
+		result = prime * result + ((productionCompany == null) ? 0 : productionCompany.hashCode());
+		result = prime * result + ((productionName == null) ? 0 : productionName.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(rate);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((rateEnum == null) ? 0 : rateEnum.hashCode());
+		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+		result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Voucher)) {
+			return false;
+		}
+		Voucher other = (Voucher) obj;
+		if (endDate == null) {
+			if (other.endDate != null) {
+				return false;
+			}
+		} else if (!endDate.equals(other.endDate)) {
+			return false;
+		}
+		if (endTime == null) {
+			if (other.endTime != null) {
+				return false;
+			}
+		} else if (!endTime.equals(other.endTime)) {
+			return false;
+		}
+		if (isPaid != other.isPaid) {
+			return false;
+		}
+		if (productionCompany == null) {
+			if (other.productionCompany != null) {
+				return false;
+			}
+		} else if (!productionCompany.equals(other.productionCompany)) {
+			return false;
+		}
+		if (productionName == null) {
+			if (other.productionName != null) {
+				return false;
+			}
+		} else if (!productionName.equals(other.productionName)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(rate) != Double.doubleToLongBits(other.rate)) {
+			return false;
+		}
+		if (rateEnum != other.rateEnum) {
+			return false;
+		}
+		if (startDate == null) {
+			if (other.startDate != null) {
+				return false;
+			}
+		} else if (!startDate.equals(other.startDate)) {
+			return false;
+		}
+		if (startTime == null) {
+			if (other.startTime != null) {
+				return false;
+			}
+		} else if (!startTime.equals(other.startTime)) {
+			return false;
+		}
+		return true;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -216,9 +313,5 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 			return startDate + " " + productionName + " " + productionCompany + " No";
 	}
 
-	@Override
-	public int compareTo(Voucher o) {
-		return this.startDate.compareTo(o.getStartDate());
-	}
 
 }

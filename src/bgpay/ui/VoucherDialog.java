@@ -196,7 +196,7 @@ public class VoucherDialog extends JDialog {
 						} catch (SQLException ex) {
 							ex.printStackTrace();
 						} finally {
-							jList.updateUI();
+							jList.repaint();
 							dispose();
 						}
 					}

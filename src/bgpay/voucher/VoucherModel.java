@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
+import javax.swing.event.ListDataListener;
 
 import bgpay.database.Database;
 
@@ -37,16 +38,6 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 
 	}
 
-	@Override
-	public int getSize() {
-		return list.size();
-	}
-
-	@Override
-	public Voucher getElementAt(int index) {
-		return list.get(index);
-	}
-
 	/**
 	 * Adds an element to the DefaultListModel
 	 * 
@@ -54,6 +45,8 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 	 */
 	public void addElement(Voucher voucher) {
 		list.add(voucher);
+		Collections.sort(list);
+		fireContentsChanged(this, getSize(), getSize());
 	}
 
 	/**
@@ -69,6 +62,21 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 			}
 		}
 		Collections.sort(list);
+	}
+
+	@Override
+	public void addListDataListener(ListDataListener e) {
+		super.addListDataListener(e);
+	}
+
+	@Override
+	public int getSize() {
+		return list.size();
+	}
+
+	@Override
+	public Voucher getElementAt(int index) {
+		return list.get(index);
 	}
 
 }

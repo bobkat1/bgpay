@@ -176,7 +176,7 @@ public class VoucherEntry extends JDialog {
 						try {
 							voucherModel.addElement(tempVoucher);
 							voucherDao.add(tempVoucher);
-							jList.updateUI();
+							jList.repaint();
 						} catch (SQLException ex) {
 							ex.printStackTrace();
 						}

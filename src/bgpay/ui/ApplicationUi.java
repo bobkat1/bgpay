@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -51,8 +53,7 @@ public class ApplicationUi {
 		JMenuItem mntmNewVoucher = new JMenuItem("New Voucher");
 		mntmNewVoucher.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				VoucherEntry vE = new VoucherEntry(database, listModel, theList);
-				listModel.addElement(vE.getVoucher());
+				new VoucherEntry(database, listModel, theList);
 			}
 		});
 		mnFile.add(mntmNewVoucher);
@@ -64,6 +65,7 @@ public class ApplicationUi {
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
 		listModel = new VoucherModel(database);
+		listModel.addListDataListener(new MyListDataListener());
 		theList = new JList<Voucher>(listModel);
 
 		ListSelectionModel lsm = theList.getSelectionModel();
@@ -104,6 +106,28 @@ public class ApplicationUi {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
+		}
+
+	}
+
+	class MyListDataListener implements ListDataListener {
+
+		@Override
+		public void intervalAdded(ListDataEvent e) {
+			theList.updateUI();
+
+		}
+
+		@Override
+		public void intervalRemoved(ListDataEvent e) {
+			theList.updateUI();
+
+		}
+
+		@Override
+		public void contentsChanged(ListDataEvent e) {
+			theList.updateUI();
 
 		}
 
