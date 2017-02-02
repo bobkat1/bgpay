@@ -43,6 +43,7 @@ public class VoucherDao extends Dao {
 		@SuppressWarnings("unused")
 		boolean result = execute(sqlString, voucher.getProductionName(), voucher.getProductionCompany(), voucher.getRate(), voucher.getStartDate(),
 				voucher.getEndDate(), Time.valueOf(voucher.getStartTime()), Time.valueOf(voucher.getEndTime()), voucher.getIsPaid());
+		LOG.debug("Voucher added to database");
 	}
 
 	/**
@@ -51,6 +52,7 @@ public class VoucherDao extends Dao {
 	 * @throws SQLException
 	 */
 	public void update(Voucher voucher) throws SQLException {
+		LOG.debug("Voucher " + voucher.getStartDate() + "updated" );
 		String sqlString = String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=?, %s=?, %s=?, %s=?, %s=? WHERE %s=? AND %s=?", TABLE_NAME, //
 				VoucherFields.PRODUCTION_NAME.getFieldTitle(), //
 				VoucherFields.PRODUCTION_COMPANY.getFieldTitle(), //
@@ -74,19 +76,9 @@ public class VoucherDao extends Dao {
 	 * @throws SQLException
 	 */
 	public void delete(Voucher voucher) throws SQLException {
-		Connection connection;
-		Statement statement = null;
-		try {
-			connection = Database.getConnection();
-			statement = connection.createStatement();
-
-			String sqlString = String.format("DELETE FROM %s WHERE %s=%s AND %s=%s", TABLE_NAME, VoucherFields.START_DATE.getFieldTitle(),
-					voucher.getStartDate(), VoucherFields.END_DATE.getFieldTitle(), voucher.getEndDate());
-			@SuppressWarnings("unused")
-			int rowcount = statement.executeUpdate(sqlString);
-		} finally {
-			close(statement);
-		}
+		String sqlString = String.format("DELETE FROM %s WHERE %s=? AND %s=?", TABLE_NAME, VoucherFields.START_DATE.getFieldTitle(), VoucherFields.END_DATE.getFieldTitle());
+		@SuppressWarnings("unused")
+		boolean result = execute(sqlString, voucher.getStartDate(), voucher.getEndDate());
 	}
 
 	public Voucher getVoucher(LocalDate date) throws Exception {

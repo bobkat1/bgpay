@@ -96,8 +96,9 @@ public class ApplicationUi {
 			}
 
 			Voucher item = (Voucher) o;
+			int index = theList.getSelectedIndex();
 			try {
-				VoucherDialog itemDialog = new VoucherDialog(item, voucherDao, listModel, theList);
+				VoucherDialog itemDialog = new VoucherDialog(item, voucherDao, listModel, index);
 				itemDialog.setVisible(true);
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block

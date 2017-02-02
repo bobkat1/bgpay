@@ -39,7 +39,7 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 	}
 
 	/**
-	 * Adds an element to the DefaultListModel
+	 * Adds an element to the ArrayList
 	 * 
 	 * @param voucher
 	 */
@@ -48,9 +48,23 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 		Collections.sort(list);
 		fireContentsChanged(this, getSize(), getSize());
 	}
+	
+	/**
+	 * Removes the element
+	 * @param voucher
+	 */
+	public void removeElement(Voucher voucher) {
+		list.remove(voucher);
+		fireContentsChanged(this, getSize(), getSize());
+	}
+	
+	public void updateElement(int index, Voucher voucher) {
+		list.set(index, voucher);
+		fireContentsChanged(this, getSize(), getSize());
+	}
 
 	/**
-	 * Uses the VoucherDao instance to populate the DefaultListModel in sorted order
+	 * Uses the VoucherDao instance to populate the ArrayList in sorted order
 	 */
 	public void listVouchers() {
 		List<Voucher> tempList = voucherDao.getAllVouchers();

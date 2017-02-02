@@ -204,6 +204,7 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 		this.isPaid = isPaid;
 	}
 
+
 	@Override
 	public int compareTo(Voucher o) {
 		if (this.equals(null) || o.equals(null))
@@ -308,9 +309,9 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	@Override
 	public String toString() {
 		if (isPaid == true)
-			return startDate + " " + productionName + " " + productionCompany + " Yes";
+			return startDate + " " + productionName + " " + productionCompany + " Paid";
 		else
-			return startDate + " " + productionName + " " + productionCompany + " No";
+			return endDate + " " + productionName + " " + productionCompany + " Not Paid";
 	}
 
 

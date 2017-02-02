@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
@@ -27,9 +26,13 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
 
 import bgpay.database.Database;
+import bgpay.util.DateAndTimeFormats;
+import bgpay.util.DateConverters;
 import bgpay.voucher.Voucher;
 import bgpay.voucher.VoucherDao;
 import bgpay.voucher.VoucherModel;
@@ -37,7 +40,8 @@ import bgpay.voucher.VoucherModel;
 public class VoucherEntry extends JDialog {
 
 	private static final long serialVersionUID = -1093318977235491292L;
-	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
+	
+	private static Logger LOG = LogManager.getLogger();
 
 	private final JPanel contentPanel = new JPanel();
 
@@ -167,10 +171,10 @@ public class VoucherEntry extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						startDate = convertDate(stDatePicker.getDate());
-						endDate = convertDate(edDatePicker.getDate());
-						startTime = LocalTime.parse(stTxtField.getText(), formatter);
-						endTime = LocalTime.parse(etTxtField.getText(), formatter);
+						startDate = DateConverters.convertToDate(stDatePicker.getDate());
+						endDate = DateConverters.convertToDate(edDatePicker.getDate());
+						startTime = LocalTime.parse(stTxtField.getText(), DateAndTimeFormats.TIMEFORMATTER);
+						endTime = LocalTime.parse(etTxtField.getText(), DateAndTimeFormats.TIMEFORMATTER);
 						Voucher tempVoucher = new Voucher(prodName, prodCom, ((PayRates) rateComboBox.getSelectedItem()).getRate(), startDate,
 								endDate, startTime, endTime, ((Paid) paidComboBox.getSelectedItem()).getIsPaid());
 						try {
@@ -202,16 +206,6 @@ public class VoucherEntry extends JDialog {
 
 	public Voucher getVoucher() {
 		return voucher;
-	}
-
-	/**
-	 * Converts a java.util.Date instance to a a
-	 * 
-	 * @param date
-	 * @return
-	 */
-	private LocalDate convertDate(Date date) {
-		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
 }

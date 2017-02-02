@@ -10,7 +10,6 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
@@ -38,6 +37,7 @@ public class VoucherDialog extends JDialog {
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
 
 	private final JPanel contentPanel = new JPanel();
+	JDialog vd = this;
 
 	private JTextField stTxtField;
 	private JTextField etTxtField;
@@ -58,7 +58,7 @@ public class VoucherDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public VoucherDialog(Voucher voucher, VoucherDao voucherDao, VoucherModel voucherModel, JList<Voucher> jList) {
+	public VoucherDialog(Voucher voucher, VoucherDao voucherDao, VoucherModel voucherModel, int index) {
 
 		this.voucher = voucher;
 
@@ -192,11 +192,10 @@ public class VoucherDialog extends JDialog {
 						 */
 						try {
 							voucherDao.update(voucher);
-							voucherModel.addElement(voucher);
+							voucherModel.updateElement(index, voucher);
 						} catch (SQLException ex) {
 							ex.printStackTrace();
 						} finally {
-							jList.repaint();
 							dispose();
 						}
 					}
@@ -206,6 +205,11 @@ public class VoucherDialog extends JDialog {
 				getRootPane().setDefaultButton(okButton);
 				{
 					JButton btnDelete = new JButton("Delete");
+					btnDelete.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							new ConfirmDelete(voucherDao, voucher, voucherModel, vd);
+						}
+					});
 					buttonPane.add(btnDelete);
 				}
 			}
