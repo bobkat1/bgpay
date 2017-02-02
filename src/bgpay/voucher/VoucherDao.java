@@ -51,7 +51,7 @@ public class VoucherDao extends Dao {
 	 * @throws SQLException
 	 */
 	public void update(Voucher voucher) throws SQLException {
-		String sqlString = String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=?, %s=?, %s=?, %s=?, %s=? WHERE %s=?", TABLE_NAME, //
+		String sqlString = String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=?, %s=?, %s=?, %s=?, %s=? WHERE %s=? AND %s=?", TABLE_NAME, //
 				VoucherFields.PRODUCTION_NAME.getFieldTitle(), //
 				VoucherFields.PRODUCTION_COMPANY.getFieldTitle(), //
 				VoucherFields.RATE.getFieldTitle(), //
@@ -59,11 +59,13 @@ public class VoucherDao extends Dao {
 				VoucherFields.END_DATE.getFieldTitle(), //
 				VoucherFields.START_TIME.getFieldTitle(), //
 				VoucherFields.END_TIME.getFieldTitle(), //
-				VoucherFields.PAID.getFieldTitle()); //
+				VoucherFields.PAID.getFieldTitle(),
+				VoucherFields.START_DATE.getFieldTitle(),
+				VoucherFields.END_DATE.getFieldTitle()); //
 
 		@SuppressWarnings("unused")
 		boolean result = execute(sqlString, voucher.getProductionName(), voucher.getProductionCompany(), voucher.getRate(), voucher.getStartDate(),
-				voucher.getEndDate(), voucher.getStartTime(), voucher.getEndTime());
+				voucher.getEndDate(), voucher.getStartTime(), voucher.getEndTime(), voucher.getIsPaid(), voucher.getStartDate(), voucher.getEndDate());
 	}
 
 	/**
@@ -78,8 +80,8 @@ public class VoucherDao extends Dao {
 			connection = Database.getConnection();
 			statement = connection.createStatement();
 
-			String sqlString = String.format("DELETE FROM %s WHERE %s=%s AND %s=%s", TABLE_NAME, VoucherFields.PRODUCTION_NAME.getFieldTitle(),
-					voucher.getProductionName(), VoucherFields.START_DATE.getFieldTitle(), voucher.getStartDate());
+			String sqlString = String.format("DELETE FROM %s WHERE %s=%s AND %s=%s", TABLE_NAME, VoucherFields.START_DATE.getFieldTitle(),
+					voucher.getStartDate(), VoucherFields.END_DATE.getFieldTitle(), voucher.getEndDate());
 			@SuppressWarnings("unused")
 			int rowcount = statement.executeUpdate(sqlString);
 		} finally {

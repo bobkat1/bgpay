@@ -4,11 +4,11 @@
  */
 package bgpay.voucher;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
-import javax.swing.DefaultListModel;
 
 import bgpay.database.Database;
 
@@ -16,8 +16,7 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 
 	private static final long serialVersionUID = -2518266574306794765L;
 
-	private DefaultListModel<Voucher> listModel;
-
+	private ArrayList<Voucher> list;
 	private VoucherDao voucherDao;
 
 	/**
@@ -32,20 +31,20 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 	 * @param database
 	 */
 	public VoucherModel(Database database) {
-		listModel = new DefaultListModel<Voucher>();
 		voucherDao = new VoucherDao(database);
+		list = new ArrayList<Voucher>();
 		listVouchers();
 
 	}
 
 	@Override
 	public int getSize() {
-		return listModel.size();
+		return list.size();
 	}
 
 	@Override
 	public Voucher getElementAt(int index) {
-		return listModel.getElementAt(index);
+		return list.get(index);
 	}
 
 	/**
@@ -54,7 +53,7 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 	 * @param voucher
 	 */
 	public void addElement(Voucher voucher) {
-		listModel.addElement(voucher);
+		list.add(voucher);
 	}
 
 	/**
@@ -66,10 +65,10 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 			return;
 		else {
 			for (Voucher vouchers : tempList) {
-				listModel.addElement(vouchers);
+				list.add(vouchers);
 			}
 		}
-		Collections.sort(tempList);
+		Collections.sort(list);
 	}
 
 }

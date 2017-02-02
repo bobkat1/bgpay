@@ -47,6 +47,7 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 		setProductionName(productionName);
 		setProductionCompany(productionCompany);
 		setRate(rate);
+		setRateEnum(rate);
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.startTime = startTime;
@@ -158,7 +159,7 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	 * Sets the class payRate field corresponding to the rate
 	 * @param rate
 	 */
-	public void setRateEnum(double rate) {
+	private void setRateEnum(double rate) {
 		PayRates[] payRates = PayRates.values();
 		for (PayRates payRate : payRates) {
 			if (rate == payRate.getRate()) {

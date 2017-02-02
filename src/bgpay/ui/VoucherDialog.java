@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
@@ -27,17 +28,16 @@ import java.sql.SQLException;
 
 import org.jdesktop.swingx.JXDatePicker;
 
-import bgpay.database.Database;
 import bgpay.voucher.Voucher;
 import bgpay.voucher.VoucherDao;
+import bgpay.voucher.VoucherModel;
 
 public class VoucherDialog extends JDialog {
 
 	private static final long serialVersionUID = -1093318977235491292L;
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
-	
+
 	private final JPanel contentPanel = new JPanel();
-	
 
 	private JTextField stTxtField;
 	private JTextField etTxtField;
@@ -52,15 +52,14 @@ public class VoucherDialog extends JDialog {
 	private LocalDate endDate;
 	private LocalTime startTime;
 	private LocalTime endTime;
-	
+
 	private Voucher voucher;
 
 	/**
 	 * Create the dialog.
 	 */
-	public VoucherDialog(Database database, Voucher voucher) {
-		
-		VoucherDao voucherDao = new VoucherDao(database);
+	public VoucherDialog(Voucher voucher, VoucherDao voucherDao, VoucherModel voucherModel, JList<Voucher> jList) {
+
 		this.voucher = voucher;
 
 		setBounds(100, 100, 450, 300);
@@ -131,34 +130,36 @@ public class VoucherDialog extends JDialog {
 		{
 			rateComboBox = new JComboBox<PayRates>();
 			rateComboBox.setModel(new DefaultComboBoxModel<PayRates>(PayRates.values()));
-			rateComboBox.setSelectedItem(voucher.getPayRateEnum());
+			rateComboBox.setSelectedIndex(voucher.getPayRateEnum().getIndex());
+			;
 			contentPanel.add(rateComboBox, "cell 0 4");
 		}
 		{
 			stTxtField = new JTextField();
-			stTxtField.setText(voucher.getStartTime().toString());
+			stTxtField.setText(voucher.getStartTime().format(formatter));
 			contentPanel.add(stTxtField, "cell 0 3");
 			stTxtField.setColumns(10);
 		}
 		{
 			etTxtField = new JTextField();
-			etTxtField.setText(voucher.getEndTime().toString());
+			etTxtField.setText(voucher.getEndTime().format(formatter));
 			contentPanel.add(etTxtField, "cell 1 3");
 			etTxtField.setColumns(10);
 			{
 				paidComboBox = new JComboBox<Paid>();
 				paidComboBox.setModel(new DefaultComboBoxModel<Paid>(Paid.values()));
+				paidComboBox.setSelectedItem(voucher.getPayRateEnum());
 				contentPanel.add(paidComboBox, "cell 0 5");
 			}
 		}
 		{
 			stDatePicker = new JXDatePicker();
-			stDatePicker.getEditor().setText("dd/mm/yy");
+			stDatePicker.getEditor().setText(voucher.getStartDate().toString());
 			contentPanel.add(stDatePicker, "cell 0 2");
 		}
 		{
 			edDatePicker = new JXDatePicker();
-			edDatePicker.getEditor().setText("dd/mm/yy");
+			edDatePicker.getEditor().setText(voucher.getEndDate().toString());
 			contentPanel.add(edDatePicker, "cell 1 2");
 		}
 		{
@@ -169,38 +170,44 @@ public class VoucherDialog extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						
-						startDate = convertDate(stDatePicker.getDate());
-						endDate = convertDate(edDatePicker.getDate());
+
+						if (stDatePicker.getDate() == null)
+							startDate = LocalDate.parse(stDatePicker.getEditor().getText());
+
+						startDate = dateSetter(stDatePicker);
+						endDate = dateSetter(edDatePicker);
 						startTime = LocalTime.parse(stTxtField.getText(), formatter);
 						endTime = LocalTime.parse(etTxtField.getText(), formatter);
-						
-						voucher.setProductionName(prodName);
-						voucher.setProductionCompany(prodCom);
-						voucher.setRate(((PayRates) rateComboBox.getSelectedItem()).getRate());
-						voucher.setStartDate(startDate);
-						voucher.setEndDate(endDate);
-						voucher.setStartTime(startTime);
-						voucher.setEndTime(endTime);
-						voucher.setIsPaid(((Paid) paidComboBox.getSelectedItem()).getIsPaid());
-						
-						/*startDate = convertDate(stDatePicker.getDate());
-						endDate = convertDate(edDatePicker.getDate());
-						startTime = LocalTime.parse(stTxtField.getText(), formatter);
-						endTime = LocalTime.parse(etTxtField.getText(), formatter);
-						Voucher tempVoucher = new Voucher(prodName, prodCom, ((PayRates) rateComboBox.getSelectedItem()).getRate(), startDate, endDate,
-								startTime, endTime, ((Paid) paidComboBox.getSelectedItem()).isPaid);*/
+
+						setVoucher();
+
+						/*
+						 * startDate = convertDate(stDatePicker.getDate());
+						 * endDate = convertDate(edDatePicker.getDate());
+						 * startTime = LocalTime.parse(stTxtField.getText(), formatter);
+						 * endTime = LocalTime.parse(etTxtField.getText(), formatter);
+						 * Voucher tempVoucher = new Voucher(prodName, prodCom, ((PayRates) rateComboBox.getSelectedItem()).getRate(), startDate,
+						 * endDate,
+						 * startTime, endTime, ((Paid) paidComboBox.getSelectedItem()).isPaid);
+						 */
 						try {
-						voucherDao.update(voucher);
+							voucherDao.update(voucher);
+							voucherModel.addElement(voucher);
 						} catch (SQLException ex) {
 							ex.printStackTrace();
+						} finally {
+							jList.updateUI();
+							dispose();
 						}
-						setVisible(false);
 					}
 				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
+				{
+					JButton btnDelete = new JButton("Delete");
+					buttonPane.add(btnDelete);
+				}
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
@@ -214,13 +221,46 @@ public class VoucherDialog extends JDialog {
 			}
 		}
 	}
-	
+
+	/**
+	 * Sets the fields in the voucher
+	 */
+	public void setVoucher() {
+		voucher.setProductionName(prodName);
+		voucher.setProductionCompany(prodCom);
+		voucher.setRate(((PayRates) rateComboBox.getSelectedItem()).getRate());
+		voucher.setStartDate(startDate);
+		voucher.setEndDate(endDate);
+		voucher.setStartTime(startTime);
+		voucher.setEndTime(endTime);
+		voucher.setIsPaid(((Paid) paidComboBox.getSelectedItem()).getIsPaid());
+
+	}
+
+	/**
+	 * 
+	 * @return the voucher
+	 */
 	public Voucher getVoucher() {
 		return voucher;
 	}
-	
+
 	/**
-	 * Converts a java.util.Date instance to a a 
+	 * 
+	 * @param date
+	 * @param datePicker
+	 */
+	private LocalDate dateSetter(JXDatePicker datePicker) {
+		if (datePicker.getDate() == null)
+			return LocalDate.parse(datePicker.getEditor().getText());
+		else
+			return convertDate(datePicker.getDate());
+
+	}
+
+	/**
+	 * Converts a java.util.Date instance to a a
+	 * 
 	 * @param date
 	 * @return
 	 */
