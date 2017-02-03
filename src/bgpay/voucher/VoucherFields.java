@@ -6,8 +6,8 @@ package bgpay.voucher;
 
 public enum VoucherFields {
 	
-	PRODUCTION_NAME("productionName"), PRODUCTION_COMPANY("productionCompany"), RATE("Rate"), START_DATE("startDate"),
-	END_DATE("endDate"), START_TIME("startTime"), END_TIME("endTime"), PAID("paid");
+	PRODUCTION_NAME("productionName"), PRODUCTION_COMPANY("productionCompany"), PAY_RATE("payRate"), START_DATE_TIME("startDateTime"),
+	END_DATE_TIME("endDateTime"), PAID("paid");
 	
 	private String fieldTitle;
 	

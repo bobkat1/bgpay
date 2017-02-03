@@ -12,8 +12,11 @@ import bgpay.voucher.VoucherDao;
 import bgpay.voucher.VoucherModel;
 
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -49,17 +52,26 @@ public class ApplicationUi {
 
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
-
-		JMenuItem mntmNewVoucher = new JMenuItem("New Voucher");
-		mntmNewVoucher.addActionListener(new ActionListener() {
+		
+		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new VoucherEntry(database, listModel, theList);
+				System.exit(1);
 			}
 		});
-		mnFile.add(mntmNewVoucher);
-
-		JMenuItem mntmShowVouchers = new JMenuItem("Show Vouchers");
-		mnFile.add(mntmShowVouchers);
+		mntmExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.ALT_MASK));
+		mnFile.add(mntmExit);
+		
+		JMenu mnVouchers = new JMenu("Vouchers");
+		menuBar.add(mnVouchers);
+		
+				JMenuItem mntmNewVoucher = new JMenuItem("New Voucher");
+				mnVouchers.add(mntmNewVoucher);
+				mntmNewVoucher.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						new VoucherEntry(database, listModel, theList);
+					}
+				});
 
 		JScrollPane scrollPane = new JScrollPane();
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -100,6 +112,7 @@ public class ApplicationUi {
 			try {
 				VoucherDialog itemDialog = new VoucherDialog(item, voucherDao, listModel, index);
 				itemDialog.setVisible(true);
+				theList.clearSelection();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -112,6 +125,9 @@ public class ApplicationUi {
 
 	}
 
+	/**
+	 * Class listens for changes to the VoucherModel
+	 */
 	class MyListDataListener implements ListDataListener {
 
 		@Override
@@ -128,7 +144,8 @@ public class ApplicationUi {
 
 		@Override
 		public void contentsChanged(ListDataEvent e) {
-			theList.updateUI();
+			theList.repaint();
+			theList.clearSelection();
 
 		}
 

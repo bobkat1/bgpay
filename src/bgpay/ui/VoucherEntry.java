@@ -14,10 +14,7 @@ import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -31,8 +28,6 @@ import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
 
 import bgpay.database.Database;
-import bgpay.util.DateAndTimeFormats;
-import bgpay.util.DateConverters;
 import bgpay.voucher.Voucher;
 import bgpay.voucher.VoucherDao;
 import bgpay.voucher.VoucherModel;
@@ -54,12 +49,8 @@ public class VoucherEntry extends JDialog {
 
 	private String prodName;
 	private String prodCom;
-	private LocalDate startDate;
-	private LocalDate endDate;
-	private LocalTime startTime;
-	private LocalTime endTime;
-
-	private Voucher voucher;
+	private LocalDateTime startDateTime;
+	private LocalDateTime endDateTime;
 
 	/**
 	 * Create the dialog.
@@ -171,16 +162,15 @@ public class VoucherEntry extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						startDate = DateConverters.convertToDate(stDatePicker.getDate());
-						endDate = DateConverters.convertToDate(edDatePicker.getDate());
-						startTime = LocalTime.parse(stTxtField.getText(), DateAndTimeFormats.TIMEFORMATTER);
-						endTime = LocalTime.parse(etTxtField.getText(), DateAndTimeFormats.TIMEFORMATTER);
-						Voucher tempVoucher = new Voucher(prodName, prodCom, ((PayRates) rateComboBox.getSelectedItem()).getRate(), startDate,
-								endDate, startTime, endTime, ((Paid) paidComboBox.getSelectedItem()).getIsPaid());
+						startDateTime = VoucherDialog.dateSetter(stDatePicker, stTxtField);
+						endDateTime = VoucherDialog.dateSetter(edDatePicker, etTxtField);
+						Voucher voucher = new Voucher.Builder(prodName, startDateTime, endDateTime, ((PayRates) rateComboBox.getSelectedItem()).getRate()).
+								productionCompany(prodCom).
+								isPaid(((Paid) paidComboBox.getSelectedItem()).getIsPaid()).build();
 						try {
-							voucherModel.addElement(tempVoucher);
-							voucherDao.add(tempVoucher);
-							jList.repaint();
+							voucherModel.addElement(voucher);
+							voucherDao.add(voucher);
+							LOG.debug("Adding " + voucher + " to the Database and GUI");
 						} catch (SQLException ex) {
 							ex.printStackTrace();
 						}
@@ -202,10 +192,6 @@ public class VoucherEntry extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-	}
-
-	public Voucher getVoucher() {
-		return voucher;
 	}
 
 }

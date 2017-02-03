@@ -16,7 +16,7 @@ public class DateConverters {
 	 * @param date
 	 * @return
 	 */
-	public static LocalDate convertToDate(Date date) {
+	public static LocalDate convertToLocalDate(Date date) {
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
