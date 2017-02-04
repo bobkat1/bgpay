@@ -16,7 +16,6 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
@@ -27,6 +26,7 @@ import java.sql.SQLException;
 
 import org.jdesktop.swingx.JXDatePicker;
 
+import bgpay.util.DateAndTimeFormats;
 import bgpay.util.DateConverters;
 import bgpay.voucher.Voucher;
 import bgpay.voucher.VoucherDao;
@@ -37,7 +37,6 @@ import bgpay.voucher.enumerations.PayRates;
 public class VoucherDialog extends JDialog {
 
 	private static final long serialVersionUID = -1093318977235491292L;
-	public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HHmm");
 
 	private final JPanel contentPanel = new JPanel();
 	JDialog vd = this;
@@ -137,13 +136,13 @@ public class VoucherDialog extends JDialog {
 		}
 		{
 			stTxtField = new JTextField();
-			stTxtField.setText(voucher.getStartTime().format(FORMATTER));
+			stTxtField.setText(voucher.getStartTime().format(DateAndTimeFormats.TIMEFORMATTER));
 			contentPanel.add(stTxtField, "cell 0 3");
 			stTxtField.setColumns(10);
 		}
 		{
 			etTxtField = new JTextField();
-			etTxtField.setText(voucher.getEndTime().format(FORMATTER));
+			etTxtField.setText(voucher.getEndTime().format(DateAndTimeFormats.TIMEFORMATTER));
 			contentPanel.add(etTxtField, "cell 1 3");
 			etTxtField.setColumns(10);
 			{
@@ -156,13 +155,13 @@ public class VoucherDialog extends JDialog {
 		{
 			stDatePicker = new JXDatePicker();
 			stDatePicker.setDate(DateConverters.convertToDate(voucher.getStartDate()));
-			stDatePicker.getEditor().setText(voucher.getStartDate().toString());
+			stDatePicker.getEditor().setText(voucher.getStartDate().format(DateAndTimeFormats.DATEFORMATTER));
 			contentPanel.add(stDatePicker, "cell 0 2");
 		}
 		{
 			edDatePicker = new JXDatePicker();
 			edDatePicker.setDate(DateConverters.convertToDate(voucher.getEndDate()));
-			edDatePicker.getEditor().setText(voucher.getEndDate().toString());
+			edDatePicker.getEditor().setText(voucher.getEndDate().format(DateAndTimeFormats.DATEFORMATTER));
 			contentPanel.add(edDatePicker, "cell 1 2");
 		}
 		{
@@ -258,7 +257,7 @@ public class VoucherDialog extends JDialog {
 			return LocalDateTime.now();
 		else {
 			LocalDate convertedDate = DateConverters.convertToLocalDate(date);
-			LocalTime convertedTime = LocalTime.parse(time, FORMATTER);
+			LocalTime convertedTime = LocalTime.parse(time, DateAndTimeFormats.TIMEFORMATTER);
 			return LocalDateTime.of(convertedDate, convertedTime);
 		}
 

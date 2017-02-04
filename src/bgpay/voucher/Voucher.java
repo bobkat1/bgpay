@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
+import bgpay.util.DateAndTimeFormats;
 import bgpay.voucher.enumerations.PayRates;
 
 /**
@@ -423,7 +424,7 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	@Override
 	public String toString() {
 		if (isPaid == true)
-			return startDateTime + " " + productionName + " " + productionCompany +  " "  + rateEnum.toString() + " " + getHoursWorked() + " Paid";
+			return startDateTime.format(DateAndTimeFormats.DATETIMEFORMAT) + " " + productionName + " " + productionCompany +  " "  + rateEnum.toString() + " " + getHoursWorked() + " Paid";
 		else
 			return endDateTime + " " + productionName + " " + productionCompany + " " + rateEnum.toString()  + " " + getHoursWorked() + " Unpaid";
 	}

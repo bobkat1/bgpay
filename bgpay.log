@@ -1003,3 +1003,17 @@
 2017-02-03 16:52:02.780 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 6: true of type java.lang.Boolean
 2017-02-03 16:52:02.780 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 7: 2017-02-03T12:00 of type java.time.LocalDateTime
 2017-02-03 16:52:02.780 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 8: 2017-02-03T23:00 of type java.time.LocalDateTime
+2017-02-03 17:07:39.902 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-03 17:07:39.904 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-03 17:08:22.304 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-03 17:08:22.306 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-03 17:09:32.922 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-03 17:09:32.923 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-03 17:11:37.702 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-03 17:11:37.704 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-03 17:17:19.982 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-03 17:17:19.984 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-03 17:18:16.132 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-03 17:18:16.134 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-03 17:21:06.948 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-03 17:21:06.949 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
