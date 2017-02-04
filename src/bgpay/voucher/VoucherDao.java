@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 import bgpay.dao.Dao;
 import bgpay.database.Database;
+import bgpay.voucher.enumerations.VoucherFields;
 
 public class VoucherDao extends Dao {
 

@@ -2,7 +2,7 @@
  * @author Robert Miki A00990619
  * @version 
  */
-package bgpay.voucher;
+package bgpay.voucher.enumerations;
 
 public enum VoucherFields {
 	

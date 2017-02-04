@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
-import bgpay.ui.PayRates;
+import bgpay.voucher.enumerations.PayRates;
 
 /**
  * @author Robert Miki A00990619
@@ -257,6 +258,18 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	public boolean getIsPaid() {
 		return isPaid;
 	}
+	
+	/**
+	 * 
+	 * @return the hour and minute difference between the startDateTime and endDateTime
+	 */
+	public String getHoursWorked() {
+		
+		long hours = ChronoUnit.HOURS.between(startDateTime, endDateTime);
+		long minutes = ChronoUnit.MINUTES.between(startDateTime, endDateTime) - (hours * 60);
+		
+		return hours + " hours " + minutes + " minutes";
+	}
 
 	/**
 	 * 
@@ -410,9 +423,9 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	@Override
 	public String toString() {
 		if (isPaid == true)
-			return startDateTime + " " + productionName + " " + productionCompany + " Paid";
+			return startDateTime + " " + productionName + " " + productionCompany +  " "  + rateEnum.toString() + " " + getHoursWorked() + " Paid";
 		else
-			return endDateTime + " " + productionName + " " + productionCompany + " Not Paid";
+			return endDateTime + " " + productionName + " " + productionCompany + " " + rateEnum.toString()  + " " + getHoursWorked() + " Unpaid";
 	}
 
 }

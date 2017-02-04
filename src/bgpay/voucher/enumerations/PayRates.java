@@ -2,7 +2,7 @@
  * @author Robert Miki A00990619
  * @version 
  */
-package bgpay.ui;
+package bgpay.voucher.enumerations;
 
 import bgpay.voucher.Voucher;
 

@@ -31,6 +31,8 @@ import bgpay.util.DateConverters;
 import bgpay.voucher.Voucher;
 import bgpay.voucher.VoucherDao;
 import bgpay.voucher.VoucherModel;
+import bgpay.voucher.enumerations.Paid;
+import bgpay.voucher.enumerations.PayRates;
 
 public class VoucherDialog extends JDialog {
 
@@ -153,11 +155,13 @@ public class VoucherDialog extends JDialog {
 		}
 		{
 			stDatePicker = new JXDatePicker();
+			stDatePicker.setDate(DateConverters.convertToDate(voucher.getStartDate()));
 			stDatePicker.getEditor().setText(voucher.getStartDate().toString());
 			contentPanel.add(stDatePicker, "cell 0 2");
 		}
 		{
 			edDatePicker = new JXDatePicker();
+			edDatePicker.setDate(DateConverters.convertToDate(voucher.getEndDate()));
 			edDatePicker.getEditor().setText(voucher.getEndDate().toString());
 			contentPanel.add(edDatePicker, "cell 1 2");
 		}

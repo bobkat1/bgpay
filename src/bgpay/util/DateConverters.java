@@ -19,5 +19,9 @@ public class DateConverters {
 	public static LocalDate convertToLocalDate(Date date) {
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
+	
+	public static Date convertToDate(LocalDate date) {
+		return java.sql.Date.valueOf(date);
+	}
 
 }

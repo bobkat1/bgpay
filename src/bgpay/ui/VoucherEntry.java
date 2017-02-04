@@ -31,6 +31,8 @@ import bgpay.database.Database;
 import bgpay.voucher.Voucher;
 import bgpay.voucher.VoucherDao;
 import bgpay.voucher.VoucherModel;
+import bgpay.voucher.enumerations.Paid;
+import bgpay.voucher.enumerations.PayRates;
 
 public class VoucherEntry extends JDialog {
 
