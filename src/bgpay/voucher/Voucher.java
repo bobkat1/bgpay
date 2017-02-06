@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Observable;
 
 import bgpay.util.DateAndTimeFormats;
 import bgpay.voucher.enumerations.PayRates;
@@ -14,7 +15,7 @@ import bgpay.voucher.enumerations.PayRates;
  * @version
  */
 
-public class Voucher implements Serializable, Comparable<Voucher> {
+public class Voucher extends Observable implements Serializable, Comparable<Voucher>{
 
 	private static final long serialVersionUID = 9214918170106433931L;
 	public static final double DEFAULT_UNION_RATE = 23.75;
@@ -268,8 +269,13 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 		
 		long hours = ChronoUnit.HOURS.between(startDateTime, endDateTime);
 		long minutes = ChronoUnit.MINUTES.between(startDateTime, endDateTime) - (hours * 60);
+		int decimalMin; 
+		if (minutes == 0) {
+			decimalMin = 0;
+		} else 
+			decimalMin = (int) (60 / minutes);
 		
-		return hours + " hours " + minutes + " minutes";
+		return hours + "." + decimalMin + " hours";
 	}
 
 	/**
@@ -279,6 +285,7 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	public void setProductionName(String productionName) {
 		if (productionName != null && productionName.length() > 0) {
 			this.productionName = productionName;
+			setChanged();
 		}
 	}
 
@@ -287,8 +294,10 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	 * @param productionCompany
 	 */
 	public void setProductionCompany(String productionCompany) {
-		if (productionCompany != null && productionCompany.length() > 0)
+		if (productionCompany != null && productionCompany.length() > 0) {
 			this.productionCompany = productionCompany;
+			setChanged();
+		}
 	}
 
 	/**
@@ -296,8 +305,11 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	 *            the rate to set
 	 */
 	public void setRate(double payRate) {
-		if (payRate > 0)
+		if (payRate > 0) {
 			this.payRate = payRate;
+			setRateEnum(payRate);
+			setChanged();
+		}
 	}
 
 	/**
@@ -320,6 +332,7 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	 */
 	public void setStartDateTime(LocalDateTime startDateTime) {
 		this.startDateTime = startDateTime;
+		setChanged();
 	}
 
 	/**
@@ -328,10 +341,16 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	 */
 	public void setEndDateTime(LocalDateTime endDateTime) {
 		this.endDateTime = endDateTime;
+		setChanged();
 	}
 
+	/**
+	 * 
+	 * @param isPaid
+	 */
 	public void setIsPaid(boolean isPaid) {
 		this.isPaid = isPaid;
+		setChanged();
 	}
 
 	@Override
@@ -424,9 +443,9 @@ public class Voucher implements Serializable, Comparable<Voucher> {
 	@Override
 	public String toString() {
 		if (isPaid == true)
-			return startDateTime.format(DateAndTimeFormats.DATETIMEFORMAT) + " " + productionName + " " + productionCompany +  " "  + rateEnum.toString() + " " + getHoursWorked() + " Paid";
+			return startDateTime.format(DateAndTimeFormats.DATETIMEFORMAT) + "|" + productionName + "|" + productionCompany +  "|"  + rateEnum.toString() + "|" + getHoursWorked() + "|Paid";
 		else
-			return endDateTime + " " + productionName + " " + productionCompany + " " + rateEnum.toString()  + " " + getHoursWorked() + " Unpaid";
+			return startDateTime.format(DateAndTimeFormats.DATETIMEFORMAT) + "|" + productionName + "|" + productionCompany + "|" + rateEnum.toString()  + "|" + getHoursWorked() + "|Unpaid";
 	}
 
 }

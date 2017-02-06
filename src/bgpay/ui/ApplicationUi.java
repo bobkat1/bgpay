@@ -67,6 +67,17 @@ public class ApplicationUi {
 		
 				JMenuItem mntmNewVoucher = new JMenuItem("New Voucher");
 				mnVouchers.add(mntmNewVoucher);
+				
+				JMenu mnSearch = new JMenu("Search");
+				menuBar.add(mnSearch);
+				
+				JMenuItem mntmMonth = new JMenuItem("Month");
+				mntmMonth.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						new MonthSearch();
+					}
+				});
+				mnSearch.add(mntmMonth);
 				mntmNewVoucher.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						new VoucherEntry(database, listModel, theList);

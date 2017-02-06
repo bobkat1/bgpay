@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.Observable;
+import java.util.Observer;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -34,7 +36,7 @@ import bgpay.voucher.VoucherModel;
 import bgpay.voucher.enumerations.Paid;
 import bgpay.voucher.enumerations.PayRates;
 
-public class VoucherDialog extends JDialog {
+public class VoucherDialog extends JDialog implements Observer {
 
 	private static final long serialVersionUID = -1093318977235491292L;
 
@@ -54,6 +56,7 @@ public class VoucherDialog extends JDialog {
 	private LocalDateTime endDateTime;
 
 	private Voucher voucher;
+	private VoucherDao voucherDao;
 
 	/**
 	 * Create the dialog.
@@ -61,6 +64,9 @@ public class VoucherDialog extends JDialog {
 	public VoucherDialog(Voucher voucher, VoucherDao voucherDao, VoucherModel voucherModel, int index) {
 
 		this.voucher = voucher;
+		voucher.addObserver(this);
+		this.voucherDao = voucherDao;
+		
 
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -188,8 +194,10 @@ public class VoucherDialog extends JDialog {
 						 * startTime, endTime, ((Paid) paidComboBox.getSelectedItem()).isPaid);
 						 */
 						try {
+							if (voucher.hasChanged()) {
 							voucherDao.update(voucher);
 							voucherModel.updateElement(index, voucher);
+							}
 							
 						} catch (SQLException ex) {
 							ex.printStackTrace();
@@ -261,6 +269,19 @@ public class VoucherDialog extends JDialog {
 			return LocalDateTime.of(convertedDate, convertedTime);
 		}
 
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if (!(o instanceof Voucher)) {
+			return;
+		}
+		Voucher voucher = (Voucher) o;
+		try {
+			voucherDao.update(voucher);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

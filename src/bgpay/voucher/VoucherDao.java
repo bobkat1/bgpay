@@ -8,8 +8,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +40,8 @@ public class VoucherDao extends Dao {
 	public void add(Voucher voucher) throws SQLException {
 		String sqlString = String.format("INSERT INTO %s values (?, ?, ?, ?, ?, ?)", TABLE_NAME);
 		@SuppressWarnings("unused")
-		boolean result = execute(sqlString, voucher.getProductionName(), voucher.getProductionCompany(), voucher.getRate(), voucher.getStartDateTime(),
-				voucher.getEndDateTime(), voucher.getIsPaid());
+		boolean result = execute(sqlString, voucher.getProductionName(), voucher.getProductionCompany(), voucher.getRate(),
+				voucher.getStartDateTime(), voucher.getEndDateTime(), voucher.getIsPaid());
 		LOG.debug("Voucher added to database");
 	}
 
@@ -51,7 +51,7 @@ public class VoucherDao extends Dao {
 	 * @throws SQLException
 	 */
 	public void update(Voucher voucher) throws SQLException {
-		LOG.debug("Voucher " + voucher.getStartDateTime() + "updated" );
+		LOG.debug("Voucher " + voucher.getStartDateTime() + "updated");
 		String sqlString = String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=?, %s=?, %s=? WHERE %s=? AND %s=?", TABLE_NAME, //
 				VoucherFields.PRODUCTION_NAME.getFieldTitle(), //
 				VoucherFields.PRODUCTION_COMPANY.getFieldTitle(), //
@@ -63,8 +63,8 @@ public class VoucherDao extends Dao {
 				VoucherFields.END_DATE_TIME.getFieldTitle()); //
 
 		@SuppressWarnings("unused")
-		boolean result = execute(sqlString, voucher.getProductionName(), voucher.getProductionCompany(), voucher.getRate(), voucher.getStartDateTime(),
-				voucher.getEndDateTime(), voucher.getIsPaid(), voucher.getStartDateTime(), voucher.getEndDateTime());
+		boolean result = execute(sqlString, voucher.getProductionName(), voucher.getProductionCompany(), voucher.getRate(),
+				voucher.getStartDateTime(), voucher.getEndDateTime(), voucher.getIsPaid(), voucher.getStartDateTime(), voucher.getEndDateTime());
 	}
 
 	/**
@@ -73,44 +73,10 @@ public class VoucherDao extends Dao {
 	 * @throws SQLException
 	 */
 	public void delete(Voucher voucher) throws SQLException {
-		String sqlString = String.format("DELETE FROM %s WHERE %s=? AND %s=?", TABLE_NAME, VoucherFields.START_DATE_TIME.getFieldTitle(), VoucherFields.END_DATE_TIME.getFieldTitle());
+		String sqlString = String.format("DELETE FROM %s WHERE %s=? AND %s=?", TABLE_NAME, VoucherFields.START_DATE_TIME.getFieldTitle(),
+				VoucherFields.END_DATE_TIME.getFieldTitle());
 		@SuppressWarnings("unused")
 		boolean result = execute(sqlString, voucher.getStartDateTime(), voucher.getEndDateTime());
-	}
-
-	public Voucher getVoucher(LocalDate date) throws Exception {
-		String sqlString = String.format("SELECT * FROM %s WHERE %s = %s", TABLE_NAME, VoucherFields.START_DATE_TIME.getFieldTitle(),
-				date);
-
-		Statement statement = null;
-		ResultSet resultSet = null;
-
-		try {
-			Connection connection = Database.getConnection();
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery(sqlString);
-
-			int count = 0;
-			while (resultSet.next()) {
-				if (count > 0)
-					throw new Exception(String.format("Expected one result, got %d", count));
-			}
-
-			LocalDateTime startDateTime = resultSet.getTimestamp(VoucherFields.START_DATE_TIME.getFieldTitle()).toLocalDateTime();
-			LocalDateTime endDateTime = resultSet.getTimestamp(VoucherFields.END_DATE_TIME.getFieldTitle()).toLocalDateTime();
-
-			return new Voucher.Builder(resultSet.getString(VoucherFields.PRODUCTION_NAME.getFieldTitle()),
-					startDateTime,
-					endDateTime,
-					resultSet.getDouble(VoucherFields.PAY_RATE.getFieldTitle())).
-					productionCompany(resultSet.getString(VoucherFields.PRODUCTION_COMPANY.getFieldTitle())).
-					isPaid(resultSet.getBoolean(VoucherFields.PAID.getFieldTitle()))
-					.build();
-
-		} finally {
-			close(statement);
-		}
-
 	}
 
 	/**
@@ -118,29 +84,32 @@ public class VoucherDao extends Dao {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<LocalDateTime> getDateTimes() throws SQLException {
-		List<LocalDateTime> list = new ArrayList<LocalDateTime>();
+	public List<Voucher> getVouchersInDateRange(Month month) throws SQLException {
 
-		String selectString = String.format("SELECT %s FROM %s", VoucherFields.START_DATE_TIME.getFieldTitle(), TABLE_NAME);
-		System.out.println(selectString);
+		List<Voucher> list = new ArrayList<Voucher>();
 
 		Statement statement = null;
 		ResultSet resultSet = null;
-		try {
-			Connection connection = Database.getConnection();
-			statement = connection.createStatement();
 
-			resultSet = statement.executeQuery(selectString);
+		String selectString = String.format("SELECT * FROM %s WHERE MONTH(%s) = %s", TABLE_NAME, VoucherFields.START_DATE_TIME.getFieldTitle(),
+				month.getValue());
+		System.out.println(selectString);
 
-			while (resultSet.next()) {
-				LocalDateTime date = resultSet.getTimestamp(VoucherFields.START_DATE_TIME.getFieldTitle()).toLocalDateTime();
-				list.add(date);
-				LOG.debug("Getting date: " + date);
-			}
-		} finally {
-			close(statement);
+		Connection connection = Database.getConnection();
+		statement = connection.createStatement();
+		resultSet = statement.executeQuery(selectString);
+
+		while (resultSet.next()) {
+			LocalDateTime startDateTime = resultSet.getTimestamp(VoucherFields.START_DATE_TIME.getFieldTitle()).toLocalDateTime();
+			LocalDateTime endDateTime = resultSet.getTimestamp(VoucherFields.END_DATE_TIME.getFieldTitle()).toLocalDateTime();
+
+			list.add(new Voucher.Builder(resultSet.getString(VoucherFields.PRODUCTION_NAME.getFieldTitle()), startDateTime, endDateTime,
+					resultSet.getDouble(VoucherFields.PAY_RATE.getFieldTitle()))
+							.productionCompany(resultSet.getString(VoucherFields.PRODUCTION_COMPANY.getFieldTitle()))
+							.isPaid(resultSet.getBoolean(VoucherFields.PAID.getFieldTitle())).build());
 		}
 		return list;
+
 	}
 
 	/**
@@ -167,13 +136,10 @@ public class VoucherDao extends Dao {
 				LocalDateTime startDateTime = resultSet.getTimestamp(VoucherFields.START_DATE_TIME.getFieldTitle()).toLocalDateTime();
 				LocalDateTime endDateTime = resultSet.getTimestamp(VoucherFields.END_DATE_TIME.getFieldTitle()).toLocalDateTime();
 
-				list.add(new Voucher.Builder(resultSet.getString(VoucherFields.PRODUCTION_NAME.getFieldTitle()),
-						startDateTime,
-						endDateTime,
-						resultSet.getDouble(VoucherFields.PAY_RATE.getFieldTitle())).
-						productionCompany(resultSet.getString(VoucherFields.PRODUCTION_COMPANY.getFieldTitle())).
-						isPaid(resultSet.getBoolean(VoucherFields.PAID.getFieldTitle()))
-						.build());
+				list.add(new Voucher.Builder(resultSet.getString(VoucherFields.PRODUCTION_NAME.getFieldTitle()), startDateTime, endDateTime,
+						resultSet.getDouble(VoucherFields.PAY_RATE.getFieldTitle()))
+								.productionCompany(resultSet.getString(VoucherFields.PRODUCTION_COMPANY.getFieldTitle()))
+								.isPaid(resultSet.getBoolean(VoucherFields.PAID.getFieldTitle())).build());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
