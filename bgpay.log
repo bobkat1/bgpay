@@ -1571,3 +1571,35 @@
 2017-02-06 16:14:34.426 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 6: true of type java.lang.Boolean
 2017-02-06 16:14:34.426 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 7: 2017-02-04T12:00 of type java.time.LocalDateTime
 2017-02-06 16:14:34.427 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 8: 2017-02-04T12:00 of type java.time.LocalDateTime
+2017-02-06 16:21:08.753 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-06 16:21:08.754 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-06 16:21:21.204 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - DELETE FROM vouchers WHERE startDateTime=? AND endDateTime=?
+2017-02-06 16:21:21.205 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - [2017-02-06T12:00, 2017-02-06T12:00]
+2017-02-06 16:21:21.205 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - parameter count = 2
+2017-02-06 16:21:21.216 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 1: 2017-02-06T12:00 of type java.time.LocalDateTime
+2017-02-06 16:21:21.217 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 2: 2017-02-06T12:00 of type java.time.LocalDateTime
+2017-02-06 16:32:30.060 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-06 16:32:30.061 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-07 11:09:14.379 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-07 11:09:14.382 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-07 11:15:17.468 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-07 11:15:17.471 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-07 11:16:08.036 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-07 11:16:08.038 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-07 11:31:28.331 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-07 11:31:28.332 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-07 11:31:54.765 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-07 11:31:54.766 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-07 11:32:46.901 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - INSERT INTO vouchers values (?, ?, ?, ?, ?, ?)
+2017-02-07 11:32:46.901 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - [Arrow, OQF, 23.75, 2017-02-07T08:30, 2017-02-07T15:00, true]
+2017-02-07 11:32:46.901 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - parameter count = 6
+2017-02-07 11:32:46.921 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 1: Arrow of type java.lang.String
+2017-02-07 11:32:46.921 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 2: OQF of type java.lang.String
+2017-02-07 11:32:46.921 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 3: 23.75 of type java.lang.Double
+2017-02-07 11:32:46.922 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 4: 2017-02-07T08:30 of type java.time.LocalDateTime
+2017-02-07 11:32:46.923 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 5: 2017-02-07T15:00 of type java.time.LocalDateTime
+2017-02-07 11:32:46.923 [AWT-EventQueue-0] DEBUG bgpay.dao.Dao - Setting param 6: true of type java.lang.Boolean
+2017-02-07 11:32:46.930 [AWT-EventQueue-0] DEBUG bgpay.voucher.VoucherDao - Voucher added to database
+2017-02-07 11:32:46.934 [AWT-EventQueue-0] DEBUG bgpay.ui.VoucherEntry - Adding Tuesday, February 7, 2017 8:30:00 AM|Arrow|OQF|UNION|6.5|Paid to the Database and GUI
+2017-02-07 11:41:08.819 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-07 11:41:08.821 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database

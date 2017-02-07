@@ -35,8 +35,7 @@ public class SelectionController implements ListSelectionListener {
 		Voucher item = (Voucher) o;
 		int index = theList.getSelectedIndex();
 		try {
-			VoucherDialog itemDialog = new VoucherDialog(item, voucherDao, voucherModel, index);
-			itemDialog.setVisible(true);
+			new VoucherDialog(item, voucherDao, voucherModel, index);
 			theList.clearSelection();
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block

@@ -254,7 +254,7 @@ public class VoucherDialog extends JDialog {
 			return LocalDateTime.now();
 		else {
 			LocalDate convertedDate = DateConverters.convertToLocalDate(date);
-			LocalTime convertedTime = LocalTime.parse(time, DateAndTimeFormats.TIMEFORMATTER);
+			LocalTime convertedTime = LocalTime.parse(time);
 			return LocalDateTime.of(convertedDate, convertedTime);
 		}
 

@@ -38,7 +38,7 @@ public class ApplicationUi {
 	 */
 	private void initialize(Database database) {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 550, 325);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();

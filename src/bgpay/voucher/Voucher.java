@@ -21,6 +21,9 @@ public class Voucher extends Observable implements Serializable, Comparable<Vouc
 	public static final double DEFAULT_UNION_RATE = 23.75;
 	public static final double SAE_RATE = 31.45;
 	public static final double NON_UNION_RATE = 11.75;
+	public static final double NON_UNION_COMISSION = 10;
+	public static final double UNION_COMMISION = 15;
+	public static final double MINUTES_HOUR = 60.0;
 
 	public static class Builder {
 
@@ -152,6 +155,7 @@ public class Voucher extends Observable implements Serializable, Comparable<Vouc
 
 	}
 
+//-----------------------------------------------------------------------------------------
 	private String productionName;
 	private String productionCompany;
 	private double payRate;
@@ -159,6 +163,10 @@ public class Voucher extends Observable implements Serializable, Comparable<Vouc
 	private LocalDateTime startDateTime;
 	private LocalDateTime endDateTime;
 	private boolean isPaid;
+	private double hoursWorked;
+	private double commissionRate;
+	private double totalPayWCommission;
+	private double totalPayWoCommission;
 
 	public Voucher() {
 
@@ -177,6 +185,9 @@ public class Voucher extends Observable implements Serializable, Comparable<Vouc
 		this.startDateTime = builder.startDateTime;
 		this.endDateTime = builder.endDateTime;
 		this.isPaid = builder.isPaid;
+		setHoursWorked();
+		setCommissionRate();
+		setTotalPay();
 	}
 
 	/**
@@ -263,19 +274,24 @@ public class Voucher extends Observable implements Serializable, Comparable<Vouc
 	
 	/**
 	 * 
-	 * @return the hour and minute difference between the startDateTime and endDateTime
+	 * @return the hoursWorked
 	 */
-	public String getHoursWorked() {
-		
-		long hours = ChronoUnit.HOURS.between(startDateTime, endDateTime);
-		long minutes = ChronoUnit.MINUTES.between(startDateTime, endDateTime) - (hours * 60);
-		int decimalMin; 
-		if (minutes == 0) {
-			decimalMin = 0;
-		} else 
-			decimalMin = (int) (60 / minutes);
-		
-		return hours + "." + decimalMin + " hours";
+	public double getHoursWorked() {
+		return hoursWorked;
+	}
+
+	/**
+	 * @return the totalPayWCommission
+	 */
+	public double getTotalPayWCommission() {
+		return totalPayWCommission;
+	}
+
+	/**
+	 * @return the totalPayWoCommission
+	 */
+	public double getTotalPayWoCommission() {
+		return totalPayWoCommission;
 	}
 
 	/**
@@ -351,6 +367,33 @@ public class Voucher extends Observable implements Serializable, Comparable<Vouc
 	public void setIsPaid(boolean isPaid) {
 		this.isPaid = isPaid;
 		setChanged();
+	}
+	
+	/**
+	 * Sets the hours worked from the startDateTime and endDateTime
+	 */
+	private void setHoursWorked() {
+		long minutes = ChronoUnit.MINUTES.between(startDateTime, endDateTime);
+		double duration = minutes / MINUTES_HOUR;
+		hoursWorked = duration;
+	}
+	
+	/**
+	 * Sets the commissionRate based on the rateEnum set
+	 */
+	private void setCommissionRate() {
+		if (rateEnum.equals(PayRates.UNION) || rateEnum.equals(PayRates.SAE)) {
+			commissionRate = UNION_COMMISION;
+		} else
+			commissionRate = NON_UNION_COMISSION;
+	}
+	
+	/**
+	 * Sets the totalPay fields
+	 */
+	private void setTotalPay() {
+		totalPayWoCommission = payRate * hoursWorked;
+		totalPayWCommission = totalPayWoCommission - (totalPayWoCommission * commissionRate);
 	}
 
 	@Override
