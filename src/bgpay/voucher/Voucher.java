@@ -332,7 +332,7 @@ public class Voucher extends Observable implements Serializable, Comparable<Vouc
 	 */
 	public void setStartDateTime(LocalDateTime startDateTime) {
 		this.startDateTime = startDateTime;
-		setChanged();
+		
 	}
 
 	/**
@@ -341,7 +341,7 @@ public class Voucher extends Observable implements Serializable, Comparable<Vouc
 	 */
 	public void setEndDateTime(LocalDateTime endDateTime) {
 		this.endDateTime = endDateTime;
-		setChanged();
+		
 	}
 
 	/**

@@ -4,16 +4,20 @@
  */
 package bgpay.voucher;
 
+import java.sql.SQLException;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.AbstractListModel;
 import javax.swing.event.ListDataListener;
 
 import bgpay.database.Database;
 
-public class VoucherModel extends AbstractListModel<Voucher> {
+public class VoucherModel extends AbstractListModel<Voucher> implements Observer {
 
 	private static final long serialVersionUID = -2518266574306794765L;
 
@@ -34,8 +38,6 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 	public VoucherModel(Database database) {
 		voucherDao = new VoucherDao(database);
 		list = new ArrayList<Voucher>();
-		listVouchers();
-
 	}
 
 	/**
@@ -58,7 +60,7 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 		fireContentsChanged(this, getSize(), getSize());
 	}
 	
-	public void updateElement(int index, Voucher voucher) {
+	public void updateElement( Voucher voucher, int index) {
 		list.set(index, voucher);
 		fireContentsChanged(this, getSize(), getSize());
 	}
@@ -66,8 +68,24 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 	/**
 	 * Uses the VoucherDao instance to populate the ArrayList in sorted order
 	 */
-	public void listVouchers() {
+	public void listAllVouchers() {
 		List<Voucher> tempList = voucherDao.getAllVouchers();
+		if (tempList.isEmpty())
+			return;
+		else {
+			for (Voucher vouchers : tempList) {
+				list.add(vouchers);
+			}
+		}
+		Collections.sort(list);
+	}
+	
+	/**
+	 * Uses the VoucherDao instance to populate the ArrayList in sorted order
+	 * @throws SQLException 
+	 */
+	public void listVouchersInMonth(Month month) throws SQLException {
+		List<Voucher> tempList = voucherDao.getVouchersInDateRange(month);
 		if (tempList.isEmpty())
 			return;
 		else {
@@ -92,5 +110,12 @@ public class VoucherModel extends AbstractListModel<Voucher> {
 	public Voucher getElementAt(int index) {
 		return list.get(index);
 	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		updateElement((Voucher) o, (int) arg);
+		
+	}
+
 
 }

@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +22,7 @@ import bgpay.dao.Dao;
 import bgpay.database.Database;
 import bgpay.voucher.enumerations.VoucherFields;
 
-public class VoucherDao extends Dao {
+public class VoucherDao extends Dao implements Observer {
 
 	public static final String TABLE_NAME = "vouchers";
 	private static final Logger LOG = LogManager.getLogger();
@@ -61,7 +63,6 @@ public class VoucherDao extends Dao {
 				VoucherFields.PAID.getFieldTitle(), //
 				VoucherFields.START_DATE_TIME.getFieldTitle(), //
 				VoucherFields.END_DATE_TIME.getFieldTitle()); //
-
 		@SuppressWarnings("unused")
 		boolean result = execute(sqlString, voucher.getProductionName(), voucher.getProductionCompany(), voucher.getRate(),
 				voucher.getStartDateTime(), voucher.getEndDateTime(), voucher.getIsPaid(), voucher.getStartDateTime(), voucher.getEndDateTime());
@@ -155,6 +156,17 @@ public class VoucherDao extends Dao {
 	public void create() throws SQLException {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		try {
+			update((Voucher) o);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }

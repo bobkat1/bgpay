@@ -8,7 +8,6 @@ import javax.swing.JMenuItem;
 
 import bgpay.database.Database;
 import bgpay.voucher.Voucher;
-import bgpay.voucher.VoucherDao;
 import bgpay.voucher.VoucherModel;
 
 import java.awt.event.ActionListener;
@@ -18,11 +17,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
 import java.awt.BorderLayout;
 import javax.swing.JList;
 
@@ -30,7 +24,7 @@ public class ApplicationUi {
 
 	public JFrame frame;
 	private JList<Voucher> theList;
-	private VoucherModel listModel;
+	private VoucherModel voucherModel;
 
 	/**
 	 * Create the application.
@@ -80,86 +74,24 @@ public class ApplicationUi {
 				mnSearch.add(mntmMonth);
 				mntmNewVoucher.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						new VoucherEntry(database, listModel, theList);
+						new VoucherEntry(database, voucherModel, theList);
 					}
 				});
 
 		JScrollPane scrollPane = new JScrollPane();
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-		listModel = new VoucherModel(database);
-		listModel.addListDataListener(new MyListDataListener());
-		theList = new JList<Voucher>(listModel);
+		voucherModel = new VoucherModel(database);
+		voucherModel.listAllVouchers();
+		theList = new JList<Voucher>(voucherModel);
+		voucherModel.addListDataListener(new MyListDataListener(theList));
 
 		ListSelectionModel lsm = theList.getSelectionModel();
 		lsm.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(theList);
 
-		SelectionController selectionController = new SelectionController(database);
+		SelectionController selectionController = new SelectionController(database, theList, voucherModel);
 		theList.addListSelectionListener(selectionController);
-	}
-
-	class SelectionController implements ListSelectionListener {
-
-		VoucherDao voucherDao;
-
-		public SelectionController(Database database) {
-			voucherDao = new VoucherDao(database);
-		}
-
-		@Override
-		public void valueChanged(ListSelectionEvent event) {
-			if (event.getValueIsAdjusting()) {
-				return;
-			}
-
-			Object o = theList.getSelectedValue();
-			if (o == null) {
-				return;
-			}
-
-			Voucher item = (Voucher) o;
-			int index = theList.getSelectedIndex();
-			try {
-				VoucherDialog itemDialog = new VoucherDialog(item, voucherDao, listModel, index);
-				itemDialog.setVisible(true);
-				theList.clearSelection();
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
-
-	}
-
-	/**
-	 * Class listens for changes to the VoucherModel
-	 */
-	class MyListDataListener implements ListDataListener {
-
-		@Override
-		public void intervalAdded(ListDataEvent e) {
-			theList.updateUI();
-
-		}
-
-		@Override
-		public void intervalRemoved(ListDataEvent e) {
-			theList.updateUI();
-
-		}
-
-		@Override
-		public void contentsChanged(ListDataEvent e) {
-			theList.repaint();
-			theList.clearSelection();
-
-		}
-
 	}
 
 }

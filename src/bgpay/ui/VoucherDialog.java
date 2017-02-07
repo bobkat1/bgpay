@@ -17,14 +17,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.sql.SQLException;
 
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -36,7 +33,7 @@ import bgpay.voucher.VoucherModel;
 import bgpay.voucher.enumerations.Paid;
 import bgpay.voucher.enumerations.PayRates;
 
-public class VoucherDialog extends JDialog implements Observer {
+public class VoucherDialog extends JDialog {
 
 	private static final long serialVersionUID = -1093318977235491292L;
 
@@ -56,7 +53,6 @@ public class VoucherDialog extends JDialog implements Observer {
 	private LocalDateTime endDateTime;
 
 	private Voucher voucher;
-	private VoucherDao voucherDao;
 
 	/**
 	 * Create the dialog.
@@ -64,9 +60,8 @@ public class VoucherDialog extends JDialog implements Observer {
 	public VoucherDialog(Voucher voucher, VoucherDao voucherDao, VoucherModel voucherModel, int index) {
 
 		this.voucher = voucher;
-		voucher.addObserver(this);
-		this.voucherDao = voucherDao;
-		
+		voucher.addObserver(voucherModel);
+		voucher.addObserver(voucherDao);
 
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -176,6 +171,9 @@ public class VoucherDialog extends JDialog implements Observer {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
+				okButton.setActionCommand("OK");
+				buttonPane.add(okButton);
+				getRootPane().setDefaultButton(okButton);
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 
@@ -183,32 +181,12 @@ public class VoucherDialog extends JDialog implements Observer {
 						endDateTime = dateSetter(edDatePicker, etTxtField);
 
 						setVoucher();
+						voucher.notifyObservers(index);
+						dispose();
 
-						/*
-						 * startDateTime = convertDate(stDatePicker.getDate());
-						 * endDate = convertDate(edDatePicker.getDate());
-						 * startTime = LocalTime.parse(stTxtField.getText(), FORMATTER);
-						 * endTime = LocalTime.parse(etTxtField.getText(), FORMATTER);
-						 * Voucher tempVoucher = new Voucher(prodName, prodCom, ((PayRates) rateComboBox.getSelectedItem()).getRate(), startDateTime,
-						 * endDate,
-						 * startTime, endTime, ((Paid) paidComboBox.getSelectedItem()).isPaid);
-						 */
-						try {
-							if (voucher.hasChanged()) {
-							voucherDao.update(voucher);
-							voucherModel.updateElement(index, voucher);
-							}
-							
-						} catch (SQLException ex) {
-							ex.printStackTrace();
-						} finally {
-							dispose();
-						}
 					}
 				});
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+
 				{
 					JButton btnDelete = new JButton("Delete");
 					btnDelete.addActionListener(new ActionListener() {
@@ -233,16 +211,27 @@ public class VoucherDialog extends JDialog implements Observer {
 	}
 
 	/**
-	 * Sets the fields in the voucher
+	 * Sets the fields in the Voucher if they are unchanged
 	 */
 	public void setVoucher() {
-		voucher.setProductionName(prodName);
-		voucher.setProductionCompany(prodCom);
-		voucher.setRate(((PayRates) rateComboBox.getSelectedItem()).getRate());
-		voucher.setStartDateTime(startDateTime);
-		voucher.setEndDateTime(endDateTime);
-		voucher.setIsPaid(((Paid) paidComboBox.getSelectedItem()).getIsPaid());
 
+		if (!voucher.getProductionName().equals(prodName))
+			voucher.setProductionName(prodName);
+
+		if (!voucher.getProductionCompany().equals(prodCom))
+			voucher.setProductionCompany(prodCom);
+
+		if (!((voucher.getRate()) == ((PayRates) rateComboBox.getSelectedItem()).getRate()))
+			voucher.setRate(((PayRates) rateComboBox.getSelectedItem()).getRate());
+
+		if (!voucher.getStartDateTime().equals(startDateTime))
+			voucher.setStartDateTime(startDateTime);
+
+		if (!voucher.getEndDateTime().equals(endDateTime))
+			voucher.setEndDateTime(endDateTime);
+
+		if (!voucher.getIsPaid() == ((Paid) paidComboBox.getSelectedItem()).getIsPaid())
+			voucher.setIsPaid(((Paid) paidComboBox.getSelectedItem()).getIsPaid());
 	}
 
 	/**
@@ -269,19 +258,6 @@ public class VoucherDialog extends JDialog implements Observer {
 			return LocalDateTime.of(convertedDate, convertedTime);
 		}
 
-	}
-
-	@Override
-	public void update(Observable o, Object arg) {
-		if (!(o instanceof Voucher)) {
-			return;
-		}
-		Voucher voucher = (Voucher) o;
-		try {
-			voucherDao.update(voucher);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 
 }
