@@ -15,7 +15,6 @@ import bgpay.voucher.VoucherModel;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
@@ -26,7 +25,6 @@ public class ConfirmDelete extends JDialog {
 	 */
 	private static final long serialVersionUID = -4301205313961402317L;
 	private final JPanel contentPanel = new JPanel();
-
 
 	/**
 	 * Create the dialog.
@@ -51,29 +49,23 @@ public class ConfirmDelete extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						try {
-							voucherDao.delete(voucher);
-							voucherModel.removeElement(voucher);
-							window.dispose();
-							dispose();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
+				getRootPane().setDefaultButton(okButton);
+				okButton.addActionListener((ActionEvent e) -> {
+					try {
+						voucherDao.delete(voucher);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
 					}
+					voucherModel.removeElement(voucher);
+					window.dispose();
+					dispose();
 				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
+				cancelButton.addActionListener((ActionEvent e) -> dispose());
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}

@@ -17,7 +17,6 @@ import bgpay.voucher.VoucherModel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.JList;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class MonthSearchedList extends JDialog {
@@ -64,14 +63,10 @@ public class MonthSearchedList extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
+				okButton.addActionListener((ActionEvent e) -> dispose());
 			}
 		}
 	}

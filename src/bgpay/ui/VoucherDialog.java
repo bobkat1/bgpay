@@ -12,7 +12,6 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -174,36 +173,23 @@ public class VoucherDialog extends JDialog {
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-
-						startDateTime = dateSetter(stDatePicker, stTxtField);
-						endDateTime = dateSetter(edDatePicker, etTxtField);
-
-						setVoucher();
-						voucher.notifyObservers(index);
-						dispose();
-
-					}
+				okButton.addActionListener((ActionEvent e) -> {
+					startDateTime = dateSetter(stDatePicker, stTxtField);
+					endDateTime = dateSetter(edDatePicker, etTxtField);
+					setVoucher();
+					voucher.notifyObservers(index);
+					dispose();
 				});
 
 				{
 					JButton btnDelete = new JButton("Delete");
-					btnDelete.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							new ConfirmDelete(voucherDao, voucher, voucherModel, vd);
-						}
-					});
 					buttonPane.add(btnDelete);
+					btnDelete.addActionListener((ActionEvent e) -> new ConfirmDelete(voucherDao, voucher, voucherModel, vd));
 				}
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
+				cancelButton.addActionListener((ActionEvent e) -> dispose());
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}

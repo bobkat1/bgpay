@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
@@ -162,34 +161,30 @@ public class VoucherEntry extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						startDateTime = VoucherDialog.dateSetter(stDatePicker, stTxtField);
-						endDateTime = VoucherDialog.dateSetter(edDatePicker, etTxtField);
-						Voucher voucher = new Voucher.Builder(prodName, startDateTime, endDateTime, ((PayRates) rateComboBox.getSelectedItem()).getRate()).
-								productionCompany(prodCom).
-								isPaid(((Paid) paidComboBox.getSelectedItem()).getIsPaid()).build();
-						try {
-							voucherModel.addElement(voucher);
-							voucherDao.add(voucher);
-							LOG.debug("Adding " + voucher + " to the Database and GUI");
-						} catch (SQLException ex) {
-							ex.printStackTrace();
-						}
-						dispose();
-					}
-				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
+				okButton.addActionListener((ActionEvent e) -> {
+					startDateTime = VoucherDialog.dateSetter(stDatePicker, stTxtField);
+					endDateTime = VoucherDialog.dateSetter(edDatePicker, etTxtField);
+					Voucher voucher = new Voucher.Builder(prodName, startDateTime, endDateTime, ((PayRates) rateComboBox.getSelectedItem()).getRate()).
+							productionCompany(prodCom).
+							isPaid(((Paid) paidComboBox.getSelectedItem()).getIsPaid()).build();
+					try {
+						voucherModel.addElement(voucher);
+						voucherDao.add(voucher);
+						LOG.debug("Adding " + voucher + " to the Database and GUI");
+					} catch (SQLException ex) {
+						ex.printStackTrace();
+					}
+					dispose();
+				});
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
+				cancelButton.setActionCommand("Cancel");
+				buttonPane.add(cancelButton);
+				cancelButton.addActionListener((ActionEvent e) -> dispose());
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}

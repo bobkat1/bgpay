@@ -10,7 +10,6 @@ import bgpay.database.Database;
 import bgpay.voucher.Voucher;
 import bgpay.voucher.VoucherModel;
 
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
@@ -19,7 +18,12 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import javax.swing.JList;
-
+/**
+ * This class is the main applications GUI window which displays a JList of all of the entered vouchers in the database.
+ * The top main contains items for exiting the program, entering a new voucher and searching months for vouchers.
+ * @author RMiki
+ * @version 1.0
+ */
 public class ApplicationUi {
 
 	public JFrame frame;
@@ -46,37 +50,25 @@ public class ApplicationUi {
 
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
-		
+
 		JMenuItem mntmExit = new JMenuItem("Exit");
-		mntmExit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(1);
-			}
-		});
+		mntmExit.addActionListener((ActionEvent e) -> System.exit(1));
 		mntmExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.ALT_MASK));
 		mnFile.add(mntmExit);
-		
+
 		JMenu mnVouchers = new JMenu("Vouchers");
 		menuBar.add(mnVouchers);
-		
-				JMenuItem mntmNewVoucher = new JMenuItem("New Voucher");
-				mnVouchers.add(mntmNewVoucher);
-				
-				JMenu mnSearch = new JMenu("Search");
-				menuBar.add(mnSearch);
-				
-				JMenuItem mntmMonth = new JMenuItem("Month");
-				mntmMonth.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						new MonthSearch();
-					}
-				});
-				mnSearch.add(mntmMonth);
-				mntmNewVoucher.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						new VoucherEntry(database, voucherModel, theList);
-					}
-				});
+
+		JMenuItem mntmNewVoucher = new JMenuItem("New Voucher");
+		mnVouchers.add(mntmNewVoucher);
+		mntmNewVoucher.addActionListener((ActionEvent e) -> new VoucherEntry(database, voucherModel, theList));
+
+		JMenu mnSearch = new JMenu("Search");
+		menuBar.add(mnSearch);
+
+		JMenuItem mntmMonth = new JMenuItem("Month");
+		mntmMonth.addActionListener((ActionEvent e) -> new MonthSearch());
+		mnSearch.add(mntmMonth);
 
 		JScrollPane scrollPane = new JScrollPane();
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);

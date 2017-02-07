@@ -1603,3 +1603,5 @@
 2017-02-07 11:32:46.934 [AWT-EventQueue-0] DEBUG bgpay.ui.VoucherEntry - Adding Tuesday, February 7, 2017 8:30:00 AM|Arrow|OQF|UNION|6.5|Paid to the Database and GUI
 2017-02-07 11:41:08.819 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
 2017-02-07 11:41:08.821 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database
+2017-02-07 14:55:07.819 [AWT-EventQueue-0] DEBUG bgpay.Driver - Loading properties file
+2017-02-07 14:55:07.821 [AWT-EventQueue-0] DEBUG bgpay.Driver - Initializing database

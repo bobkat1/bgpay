@@ -1,5 +1,5 @@
 /**
- * @author Robert Miki A00990619
+ * @author Robert Miki
  * @version 1.0
  */
 package bgpay.database;
